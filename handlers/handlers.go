@@ -25,7 +25,7 @@ func GetHealth(c *fiber.Ctx) error {
 }
 
 func GetVersion(c *fiber.Ctx) error {
-	version := utils.GetVersion()
+	version, _ := utils.GetVersion()
 
 	return c.JSON(fiber.Map{"version": version})
 }

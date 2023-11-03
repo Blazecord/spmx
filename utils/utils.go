@@ -1,47 +1,28 @@
 package utils
 
 import (
-	"os"
 	"encoding/json"
+	"net/http"
 )
 
 type PackageJson struct {
 	Version string `json:"version"`
 }
 
-func GetVersion() string {
-	packageJsonPath := "~/blaze/package.json"
-
-	packageJsonPath, err := expandTilde(packageJsonPath)
-
+func GetVersion() (string, error) {
+	resp, err := http.Get("https://raw.githubusercontent.com/Blazecord/blaze/master/package.json")
 	if err != nil {
-		return ""
+		return "", err
 	}
-
-    packageJsonData, err := os.ReadFile(packageJsonPath)
-
-    if err != nil {
-        return ""
-    }
+	defer resp.Body.Close()
 
 	var packageInfo PackageJson
-
-	if err := json.Unmarshal(packageJsonData, &packageInfo); err != nil {
-		return ""
+	err = json.NewDecoder(resp.Body).Decode(&packageInfo)
+	if err != nil {
+		return "", err
 	}
 
 	version := packageInfo.Version
 
-	return version
-}
-
-func expandTilde(path string) (string, error) {
-    if path[:2] == "~/" {
-        homeDir, err := os.UserHomeDir()
-        if err != nil {
-            return "", err
-        }
-        return homeDir + path[1:], nil
-    }
-    return path, nil
+	return version, err
 }
