@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"github.com/ryzmae/utils"
 	"os"
 
 	"github.com/gofiber/fiber/v2"
@@ -21,5 +22,11 @@ func GetHome(c *fiber.Ctx) error {
 
 func GetHealth(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{"status": "ok"})
+}
+
+func GetVersion(c *fiber.Ctx) error {
+	version := utils.GetVersion()
+
+	return c.JSON(fiber.Map{"version": version})
 }
 

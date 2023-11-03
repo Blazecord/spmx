@@ -1,8 +1,7 @@
 package main
 
 import (
-	// "github.com/ryzmae/handlers"
-
+	"github.com/ryzmae/handlers"
 	"github.com/gofiber/fiber/v2"
 	"os"
 	"flag"
@@ -40,6 +39,12 @@ func main() {
 
 	app.Use(recover.New())
 	app.Use(logger.New())
+
+	v1 := app.Group("/v1")
+
+	app.Get("/", handlers.GetHome)
+	v1.Get("/health", handlers.GetHealth)
+	v1.Get("/version", handlers.GetVersion)
 
 	log.Fatal(app.Listen(*port))
 }
